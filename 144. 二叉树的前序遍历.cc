@@ -7,26 +7,25 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
- /* 递归 */
+/* 递归 */
 class Solution {
 public:
-    vector<int> inorderTraversal(TreeNode* root) 
+    vector<int> preorderTraversal(TreeNode* root) 
     {
         vector<int> res;
         if(root == nullptr) return res;
-        
-        if(root->left != nullptr)
-        {
-            const vector<int> &left = inorderTraversal(root->left);
-            res = std::move(left);
-        }
+
         res.push_back(root->val);
-        if(root->right != nullptr)
+        if(root->left)
         {
-            const vector<int> &right = inorderTraversal(root->right);
+            const vector<int> &left = preorderTraversal(root->left);
+            res.insert(res.end(), left.begin(), left.end());
+        }
+        if(root->right)
+        {
+            const vector<int> &right = preorderTraversal(root->right);
             res.insert(res.end(), right.begin(), right.end());
         }
-   
         return res;
     }
 };
@@ -34,24 +33,20 @@ public:
 /* 栈 */
 class Solution {
 public:
-    vector<int> inorderTraversal(TreeNode* root) 
+    vector<int> preorderTraversal(TreeNode* root) 
     {
         vector<int> res;
         if(root == nullptr) return res;
 
         stack<TreeNode *> s;
-        TreeNode *node = root;
-        while(node != nullptr || !s.empty())
+        s.push(root);
+        while(!s.empty())
         {
-            while(node != nullptr)
-            {
-                s.push(node);
-                node = node->left;
-            }
-            node = s.top();
+            TreeNode *node = s.top();
             s.pop();
             res.push_back(node->val);
-            node = node->right;
+            if(node->right) s.push(node->right);    /* 左右子树交换位置 */
+            if(node->left) s.push(node->left);
         }
         return res;
     }
