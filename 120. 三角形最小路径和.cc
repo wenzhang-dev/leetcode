@@ -19,3 +19,23 @@ public:
     }
 };
 
+           |= triangle[n-1,c]       if n-1 is the last row. 
+f(n-1, c) -|
+           |= min{f(n,c) + triangle[n-1,c], f(n,c+1) + triangle[n-1,c]}
+
+class Solution {
+public:
+    /* 从下向上求和 */
+    int minimumTotal(vector<vector<int>>& triangle) 
+    {
+        vector<int> dp(triangle.back());
+        for(int i=triangle.size()-2; i>=0; --i)
+        {
+            for(int j=0; j<i+1; ++j)
+            {
+                dp[j] = min(dp[j]+triangle[i][j], dp[j+1]+triangle[i][j]);
+            }
+        }
+        return dp[0];
+    }
+};
